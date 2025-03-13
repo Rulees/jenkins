@@ -53,7 +53,7 @@ pipeline {
     post {
         always {
             script {
-                disk_usage = sh(script: "df -h | grep '/$' | awk '{ print \$5 }' | sed 's/%//'", returnStdout: true).trim()
+                disk_usage = sh(script: "df -h | grep '\/$' | awk '{ print \$5 }' | sed 's/%//'", returnStdout: true).trim()
 
                 if (!fileExists(LOG_FILE)) {
                     writeFile file: LOG_FILE, text: ""
