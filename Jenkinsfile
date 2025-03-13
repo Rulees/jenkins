@@ -4,6 +4,7 @@ pipeline {
     triggers {
         githubPush()
     }
+    
     environment {
         REGISTRY = "arkselen"
         IMAGE_NAME = "test"
@@ -14,12 +15,13 @@ pipeline {
         CONTAINER_NAME = "${IMAGE_NAME}_container"
         LOG_FILE = "/var/log/jenkins/disk_usage.log"
     }
+
     stages {
         stage('Build and Push Docker Image') {
             steps {
                 script {
                     sh "docker build -t ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} ."
-                    sh "echo $DOCKER_TOKEN | docker login -u $DOCKER_USERNAME --password-stdin ${REGISTRY}"
+                    sh "echo \$DOCKER_TOKEN | docker login -u \$DOCKER_USERNAME --password-stdin ${REGISTRY}"
                     sh "docker push ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
                 }
             }
@@ -43,7 +45,7 @@ pipeline {
         stage('Cleanup Old Docker Images from Registry') {
             steps {
                 script {
-                    sh "./cleanup_registry.sh ${REGISTRY} ${IMAGE_NAME} $DOCKER_USERNAME $DOCKER_TOKEN"
+                    sh "./cleanup_registry.sh ${REGISTRY} ${IMAGE_NAME} \$DOCKER_USERNAME \$DOCKER_TOKEN"
                 }
             }
         }
@@ -51,18 +53,18 @@ pipeline {
     post {
         always {
             script {
-                disk_usage=$(df -h | grep '\/$' | awk '{ print \$5}' | sed 's/%//')
+                disk_usage = sh(script: "df -h | grep '/$' | awk '{ print \$5 }' | sed 's/%//'", returnStdout: true).trim()
 
-                if [ ! -f $LOG_FILE ]; then
-                    touch $LOG_FILE
-                fi
+                if (!fileExists(LOG_FILE)) {
+                    writeFile file: LOG_FILE, text: ""
+                }
 
-                    if [[ $disk_usage -gt 90 ]]; then
+                if (disk_usage.toInteger() > 90) {
                         echo "Disk space is low. Performing remove images"
                         sh "docker system prune -f"
                         
-                        echo "$(date '+%Y-%m-%d %H:%M:%S') - Cleanup! Filesystem is $disk_usage% full " >> $LOG_FILE
-                    fi
+                    sh "echo '$(date +'%Y-%m-%d %H:%M:%S') - Cleanup! Filesystem is $disk_usage% full' >> $LOG_FILE"
+                }
             }
         }
     }
