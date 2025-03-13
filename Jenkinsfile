@@ -6,7 +6,7 @@ pipeline {
     }
     
     environment {
-        REGISTRY = "task16"
+        REGISTRY = "arkselen/task16"
         IMAGE_NAME = "test"
         IMAGE_TAG = "latest"
         DOCKER_USERNAME = "arkselen"
