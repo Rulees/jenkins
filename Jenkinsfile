@@ -51,7 +51,7 @@ pipeline {
     post {
         always {
             script {
-                disk_usage=$(df -h | grep "/$" | awk "{ print $5}" | sed "s/%//")
+                disk_usage=$(df -h | grep '/$' | awk '{ print \$5}' | sed 's/%//')
 
                 if [ ! -f $LOG_FILE ]; then
                     touch $LOG_FILE
@@ -61,7 +61,7 @@ pipeline {
                         echo "Disk space is low. Performing remove images"
                         sh "docker system prune -f"
                         
-                        echo "$(date "+%Y-%m-%d %H:%M:%S") - Cleanup! Filesystem is $disk_usage% full " >> $LOG_FILE
+                        echo "$(date '+%Y-%m-%d %H:%M:%S') - Cleanup! Filesystem is $disk_usage% full " >> $LOG_FILE
                     fi
             }
         }
