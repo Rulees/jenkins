@@ -51,7 +51,7 @@ pipeline {
     post {
         always {
             script {
-                disk_usage=$(df -h | grep '/$' | awk '{ print \$5}' | sed 's/%//')
+                disk_usage=$(df -h | grep '\/$' | awk '{ print \$5}' | sed 's/%//')
 
                 if [ ! -f $LOG_FILE ]; then
                     touch $LOG_FILE
