@@ -50,22 +50,22 @@ pipeline {
             }
         }
     }
-    post {
-        always {
-            script {
-                // disk_usage = sh(script: "df -h | grep '\/$' | awk '{ print \$5 }' | sed 's/%//'", returnStdout: true).trim()
+    // post {
+    //     always {
+    //         script {
+    //             // disk_usage = sh(script: "df -h | grep '\/$' | awk '{ print \$5 }' | sed 's/%//'", returnStdout: true).trim()
 
-                // if (!fileExists(LOG_FILE)) {
-                //     writeFile file: LOG_FILE, text: ""
-                // }
+    //             // if (!fileExists(LOG_FILE)) {
+    //             //     writeFile file: LOG_FILE, text: ""
+    //             // }
 
-                // if (disk_usage.toInteger() > 90) {
-                //         echo "Disk space is low. Performing remove images"
-                //         sh "docker system prune -f"
+    //             // if (disk_usage.toInteger() > 90) {
+    //             //         echo "Disk space is low. Performing remove images"
+    //             //         sh "docker system prune -f"
                         
-                //     sh "echo '$(date +'%Y-%m-%d %H:%M:%S') - Cleanup! Filesystem is $disk_usage% full' >> $LOG_FILE"
-                // }
-            }
-        }
-    }
+    //             //     sh "echo '$(date +'%Y-%m-%d %H:%M:%S') - Cleanup! Filesystem is $disk_usage% full' >> $LOG_FILE"
+    //             // }
+    //         }
+    //     }
+    // }
 }
